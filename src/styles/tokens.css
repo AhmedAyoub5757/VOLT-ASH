@@ -1,0 +1,31 @@
+:root {
+  /* 60% — dominant */
+  --color-cream: #fffaf0;
+
+  /* 30% — secondary */
+  --color-green: #2d5a27;
+  --color-pink: #ff93a4;
+
+  /* 10% — accent */
+  --color-red: #cf0023;
+
+  /* Neutrals for text/contrast, derived not arbitrary */
+  --color-ink: #1a1a1a;
+  --color-ink-soft: #3a3a3a;
+
+  /* Typography */
+  --font-display: "Cormorant Garamond", serif;
+  --font-ui: "Space Grotesk", sans-serif;
+
+  /* Type scale */
+  --fs-display-xl: clamp(3.5rem, 8vw, 10rem); /* hero headlines */
+  --fs-display-lg: clamp(2.5rem, 5vw, 5.5rem); /* section headlines */
+  --fs-display-md: clamp(1.75rem, 3vw, 3rem); /* sub-headlines */
+  --fs-body: 1rem; /* 16px base body */
+  --fs-label: 0.8125rem; /* 13px nav/labels */
+
+  --tracking-label: 0.12em; /* wide letter-spacing for UI labels */
+  --tracking-display: -0.02em; /* tight letter-spacing for large display type */
+
+  --ease-cinematic: cubic-bezier(0.65, 0, 0.35, 1);
+}
