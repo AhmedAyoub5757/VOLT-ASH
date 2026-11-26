@@ -8,6 +8,10 @@ import gsap from "gsap";
 export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [visible, setVisible] = useState(true);
+
+  const lastScrollY = useRef(0);
+  const hideTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -41,15 +45,51 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.85);
+    const onScroll = () => {
+      const currentY = window.scrollY;
+      const isScrolledPast = currentY > 80;
+      setScrolled(isScrolledPast);
+
+      // At top of page, always keep visible
+      if (currentY <= 50) {
+        if (hideTimer.current) clearTimeout(hideTimer.current);
+        setVisible(true);
+        lastScrollY.current = currentY;
+        return;
+      }
+
+      const diff = currentY - lastScrollY.current;
+
+      if (diff > 5) {
+        // Scrolling DOWN -> immediately hide
+        if (hideTimer.current) clearTimeout(hideTimer.current);
+        setVisible(false);
+      } else if (diff < -5) {
+        // Scrolling UP -> reveal for 1 second, then hide again
+        setVisible(true);
+        if (hideTimer.current) clearTimeout(hideTimer.current);
+        hideTimer.current = setTimeout(() => {
+          // If still down the page, hide after 1 second
+          if (window.scrollY > 50) {
+            setVisible(false);
+          }
+        }, 1000);
+      }
+
+      lastScrollY.current = currentY;
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+    };
   }, []);
 
   return (
     <header
       ref={navRef}
-      className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}
+      className={`navbar ${scrolled ? "navbar--scrolled" : ""} ${visible ? "navbar--visible" : "navbar--hidden"}`}
     >
       <nav className="navbar__left">
         <Link href="/collections/all">Shop</Link>

@@ -42,7 +42,18 @@ a {
   background: transparent;
   color: var(--color-cream);
   mix-blend-mode: difference;
-  transition: background 0.5s var(--ease-cinematic), backdrop-filter 0.5s var(--ease-cinematic);
+  transition: transform 0.4s var(--ease-cinematic), opacity 0.4s var(--ease-cinematic), background 0.5s var(--ease-cinematic), backdrop-filter 0.5s var(--ease-cinematic);
+}
+
+.navbar--hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.navbar--visible {
+  transform: translateY(0);
+  opacity: 1;
 }
 
 .navbar--scrolled {
@@ -154,4 +165,8 @@ a {
 
 body {
   background: #14211a; /* matches hero so there's no flash before hydration */
+}
+
+html, body {
+  overflow-x: hidden;
 }
