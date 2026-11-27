@@ -5,6 +5,7 @@ import FeaturedProducts from "@/components/home/FeaturedProducts";
 import LookbookRunway from "@/components/home/LookbookRunway";
 import BrandManifesto from "@/components/home/BrandManifesto";
 import SeasonalDrop from "@/components/home/SeasonalDrop";
+import Testimonials from "@/components/home/Testimonials";
 
 import "../styles/tokens.css";
 
@@ -18,6 +19,7 @@ export default function Home() {
       <LookbookRunway />
       <BrandManifesto />
       <SeasonalDrop />
+      <Testimonials />
     </main>
   );
 }

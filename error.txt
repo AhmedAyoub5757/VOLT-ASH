@@ -1,0 +1,114 @@
+Found it — and you're right that it's systemic, not just this component. The root cause is a single line from Stage 2 that's been breaking spacing on every Tailwind utility class (p-*, m-*, gap-*, mt-*, etc.) across the entire site ever since.
+
+What happened: in Stage 2.6 I had you add this to globals.css:
+
+css
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+This rule sits outside any @layer. Tailwind v4's own utility classes (including every spacing class you've used since) live inside @layer utilities. Per the CSS Cascade Layers spec, any unlayered rule always beats every layered rule, regardless of specificity or class order. So that one plain * reset has been silently zeroing out every p-, m-, gap-, mt-, mb- class on every element, site-wide — exactly the "touching the edges, no spacing" symptom you're seeing everywhere, including in the testimonials card I "fixed" (the mt-4, mb-6, gap-2 classes in that component were never actually applying).
+
+Tailwind's built-in Preflight reset (bundled automatically with @import "tailwindcss") already does this same margin/padding/box-sizing reset correctly inside its own layer — our manual version was both redundant and the thing silently sabotaging everything downstream.
+
+The fix — replace src/app/globals.css with this
+css
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+@layer base {
+  body {
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-ui);
+    font-size: var(--fs-body);
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, .display {
+    font-family: var(--font-display);
+    letter-spacing: var(--tracking-display);
+    font-weight: 500;
+    line-height: 1.05;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 3rem;
+  font-family: var(--font-ui);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  background: transparent;
+  mix-blend-mode: difference;
+  color: var(--color-cream);
+}
+
+.navbar__logo {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.navbar__links {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.footer {
+  background: var(--color-green);
+  color: var(--color-cream);
+  padding: 4rem 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.footer__logo {
+  font-family: var(--font-display);
+  font-size: 2rem;
+}
+
+.footer__links {
+  display: flex;
+  gap: 2rem;
+  font-size: var(--fs-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.footer__legal {
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+What I changed, specifically:
+
+Deleted the unlayered * { margin:0; padding:0; box-sizing:border-box; } block entirely — Tailwind's Preflight already covers this correctly, inside its own layer
+Wrapped body, h1/h2/h3, and a in @layer base {} so they now participate properly in the cascade and won't out-rank Tailwind utility classes (e.g. if you ever add text-red-500 to a link somewhere, it'll now actually apply, where before the unlayered a { color: inherit } would have silently won every time)
+Removed the stray duplicate body { background: #14211a; } override from Stage 3 (it was unlayered too, and was overriding your cream body background site-wide, not just pre-hydration as intended) — the Hero component already sets its own background explicitly, so the body doesn't need to
+Kept .navbar / .footer as plain un-layered rules since they don't use Tailwind utility spacing classes internally — they're self-contained with explicit padding:/gap: values, so they're not affected by this bug and don't need to move
+
+Action items:
+
+Replace globals.css with the content above exactly
+Run npm run dev, hard-refresh, and check the Testimonials cards — spacing should now show correctly (gap between the dot/tag and quote icon, gap before the quote, gap before divider, gap before name)
+Spot-check a couple of earlier sections too (CategoryRings padding, FeaturedProducts gaps) — they should now also show real breathing room where they didn't before
+
+This was a one-line root cause for a very widespread symptom, so this single fix should resolve the issue everywhere, not just in testimonials. Let me know if anything's still off after this, otherwise we're clear to move to CTA Banner.
