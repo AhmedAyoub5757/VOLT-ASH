@@ -6,6 +6,7 @@ import LookbookRunway from "@/components/home/LookbookRunway";
 import BrandManifesto from "@/components/home/BrandManifesto";
 import SeasonalDrop from "@/components/home/SeasonalDrop";
 import Testimonials from "@/components/home/Testimonials";
+import CTABanner from "@/components/home/CTABanner";
 
 import "../styles/tokens.css";
 
@@ -20,6 +21,7 @@ export default function Home() {
       <BrandManifesto />
       <SeasonalDrop />
       <Testimonials />
+      <CTABanner />
     </main>
   );
 }
