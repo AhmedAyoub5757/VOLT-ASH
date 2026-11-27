@@ -4,6 +4,7 @@ import CategoryRings from "@/components/home/CategoryRings";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import LookbookRunway from "@/components/home/LookbookRunway";
 import BrandManifesto from "@/components/home/BrandManifesto";
+import SeasonalDrop from "@/components/home/SeasonalDrop";
 
 import "../styles/tokens.css";
 
@@ -16,6 +17,7 @@ export default function Home() {
       <FeaturedProducts />
       <LookbookRunway />
       <BrandManifesto />
+      <SeasonalDrop />
     </main>
   );
 }
