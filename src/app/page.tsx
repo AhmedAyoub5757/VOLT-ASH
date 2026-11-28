@@ -7,8 +7,10 @@ import BrandManifesto from "@/components/home/BrandManifesto";
 import SeasonalDrop from "@/components/home/SeasonalDrop";
 import Testimonials from "@/components/home/Testimonials";
 import CTABanner from "@/components/home/CTABanner";
+import FAQSection from "@/components/home/FAQs";
 
 import "../styles/tokens.css";
+import FaqSection from "@/components/home/FAQs";
 
 export default function Home() {
   return (
@@ -22,6 +24,7 @@ export default function Home() {
       <SeasonalDrop />
       <Testimonials />
       <CTABanner />
+      <FAQSection />
     </main>
   );
 }
