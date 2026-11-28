@@ -10,7 +10,6 @@ import CTABanner from "@/components/home/CTABanner";
 import FAQSection from "@/components/home/FAQs";
 
 import "../styles/tokens.css";
-import FaqSection from "@/components/home/FAQs";
 
 export default function Home() {
   return (
